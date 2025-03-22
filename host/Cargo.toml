@@ -1,0 +1,10 @@
+[package]
+name = "bitvm2-covenant-run"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+zkm2-sdk = { workspace = true }
+
+[build-dependencies]
+zkm2-build = { workspace = true }

@@ -1,0 +1,17 @@
+[workspace.package]
+version = "0.0.1"
+edition = "2021"
+
+[workspace]
+members = [
+    "host"
+]
+resolver = "2"
+
+#default-members = ["bitvm2-covenant"]
+
+[workspace.dependencies]
+#zkm2-sdk = { github = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
+#zkm2-build = { github = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
+zkm2-sdk   = { path = "../zkm2/crates/sdk" }
+zkm2-build = { path = "../zkm2/crates/build" }
