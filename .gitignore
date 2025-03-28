@@ -2,3 +2,4 @@ target
 guest/target
 guest-std/target
 .idea
+proof-with-pis.bin

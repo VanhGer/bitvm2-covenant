@@ -6,14 +6,10 @@ publish = false
 
 [dependencies]
 revm = { git = "https://github.com/zkMIPS/revm", branch = "zkm2", default-features = false, features = [ "serde" ] }
-#revm = { path = "../../revm/crates/revm" }
-models = { git = "https://github.com/zkMIPS/revme", package = "models" }
-#models = { path = "../../revme/models" } 
-serde = { version = "1.0", default-features = false, features = ["derive", "rc"] }
-serde_json = { version = "1.0", default-features = false }
+guest-std = { git = "https://github.com/zkMIPS/revme", package = "guest-std", branch = "cbor-zkm2" }
 
 k256 = { version = "0.13.3", features = ["ecdsa"], default-features = false }
-libc = { version = "0.2" , features = ["extra_traits"] }
+libc = { version = "0.2", features = ["extra_traits"] }
 hex = "0.4.3"
 
 covenant-lib = { path = "../covenant-lib" }

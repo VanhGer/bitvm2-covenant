@@ -10,6 +10,7 @@ zkm2-verifier = { workspace = true }
 hex = { workspace = true }
 ark-bn254 = { version = "0.5" }
 ark-groth16 = { version = "0.5" }
+guest-std = { git = "https://github.com/zkMIPS/revme", package = "guest-std", branch = "cbor-zkm2" }
 
 [build-dependencies]
 zkm2-build = { workspace = true }

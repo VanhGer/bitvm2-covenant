@@ -8,20 +8,15 @@ use revm::{
     primitives::{b256, U256},
 };
 
-//use zkm2_zkvm::lib::hasher::Hasher;
-
 extern crate libc;
 
-//use models::*;
 use covenant_lib::{
-    recover_address,
-    read_suite,
-    check_withdraw,
     execute_test_suite,
+    check_withdraw,
+    read_suite,
 };
 
 extern crate alloc;
-use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::string::ToString;
 use alloc::vec::Vec;
@@ -42,8 +37,9 @@ pub fn main() {
     let withdraw_map_base_key = zkm2_zkvm::io::read();  
     let withdraw_map_index = zkm2_zkvm::io::read(); 
     let peg_in_txid: Vec<u8> = zkm2_zkvm::io::read(); 
-    let tx_list: Vec<u8> = zkm2_zkvm::io::read(); 
-    let suite = read_suite(&tx_list);
+    let tx_list: Vec<u8> = zkm2_zkvm::io::read_vec();
+
+    let suite = read_suite(&tx_list).unwrap();
 
     assert!(check_withdraw(
         &withdraw_contract_address,

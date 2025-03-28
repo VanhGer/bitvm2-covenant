@@ -9,8 +9,7 @@ cargo run -r  --bin bitvm2-covenant-guest
 
 ## Generate the Proof
 ```
-cargo run -r  --bin bitvm2-covenant-host
+export CARGO_NET_GIT_FETCH_WITH_CLI=true
+
+ZKM_DEV=true cargo run -r  --bin bitvm2-covenant-host
 ```
-
-
-
