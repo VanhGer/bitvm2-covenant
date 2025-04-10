@@ -13,15 +13,8 @@ resolver = "2"
 default-members = ["host", "guest-std"]
 
 [workspace.dependencies]
-zkm2-sdk = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
-zkm2-build = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
-zkm2-prover = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
-zkm2-verifier = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init", features = ["ark"] }
-zkm2-zkvm = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init" }
+zkm-sdk = { git = "https://github.com/zkMIPS/zkMIPS" }
+zkm-build = { git = "https://github.com/zkMIPS/zkMIPS" }
+zkm-verifier = { git = "https://github.com/zkMIPS/zkMIPS", features = ["ark"] }
+zkm-zkvm = { git = "https://github.com/zkMIPS/zkMIPS" }
 hex = "0.4.3"
-
-# zkm2-sdk   = { path = "../zkm2/crates/sdk" }
-# zkm2-build = { path = "../zkm2/crates/build" }
-# zkm2-prover = { path = "../zkm2/crates/prover" }
-# zkm2-verifier = { path = "../zkm2/crates/verifier", features = ["ark"] }
-# zkm2-zkvm = { path = "../zkm2/crates/zkvm/entrypoint" }

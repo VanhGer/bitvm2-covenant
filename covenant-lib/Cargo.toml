@@ -5,10 +5,10 @@ edition = "2021"
 publish = false
 
 [dependencies]
-revm = { git = "https://github.com/zkMIPS/revm", branch = "zkm2", default-features = false, features = [ "serde", "optional_no_base_fee", "optional_balance_check" ] }
-guest = { git = "https://github.com/zkMIPS/revme", package = "guest", branch = "cbor-zkm2" }
-models = { git = "https://github.com/zkMIPS/revme", package = "models", branch = "cbor-zkm2" }
-zkm2-zkvm = { git = "https://github.com/zkMIPS/zkm2", branch = "dev/init", package = "zkm2-zkvm" }
+revm = { git = "https://github.com/zkMIPS/revm", branch = "zkMIPS", default-features = false, features = [ "serde", "optional_no_base_fee", "optional_balance_check" ] }
+guest = { git = "https://github.com/zkMIPS/revme", package = "guest", branch = "zkMIPS" }
+models = { git = "https://github.com/zkMIPS/revme", package = "models", branch = "zkMIPS" }
+zkm-zkvm = { git = "https://github.com/zkMIPS/zkMIPS", package = "zkm-zkvm" }
 
 k256 = { version = "0.13.3", features = ["ecdsa"], default-features = false }
 libc = { version = "0.2", features = ["extra_traits"] }

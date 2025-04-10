@@ -11,5 +11,5 @@ cargo run -r  --bin bitvm2-covenant-guest
 ```
 export CARGO_NET_GIT_FETCH_WITH_CLI=true
 
-ZKM_DEV=true cargo run -r  --bin bitvm2-covenant-host
+cargo run -r --bin bitvm2-covenant-host
 ```
