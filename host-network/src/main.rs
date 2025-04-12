@@ -59,7 +59,6 @@ async fn main() -> anyhow::Result<()> {
                         prover_result.proof_with_public_inputs.len(), seg_size/2
                     );
                 }
-                let tmp = prover_result.proof_with_public_inputs.clone();
                 let output_path = Path::new(&output_dir);
                 let proof_result_path =
                     output_path.join("snark_proof_with_public_inputs.json");
