@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, vec};
 use std::fs::{read, File};
 use std::io::Read;
 use std::path::Path;
@@ -13,9 +13,9 @@ async fn main() -> anyhow::Result<()> {
     env_logger::try_init().unwrap_or_default();
 
     // Set up
-    let output_dir = env::var("OUTPUT_DIR").unwrap_or(String::from("./output"));
-    let seg_size = env::var("SEG_SIZE").unwrap_or("262144".to_string());
-    let seg_size = seg_size.parse::<_>().unwrap_or(262144);
+    let output_dir = env::var("OUTPUT_DIR").unwrap_or("./output".to_string());
+    let seg_size = env::var("SEG_SIZE").unwrap_or("524288".to_string());
+    let seg_size = seg_size.parse::<_>().unwrap_or(524288);
     let execute_only = env::var("EXECUTE_ONLY").unwrap_or("false".to_string());
     let execute_only = execute_only.parse::<bool>().unwrap_or(false);
 
@@ -59,6 +59,7 @@ async fn main() -> anyhow::Result<()> {
                         prover_result.proof_with_public_inputs.len(), seg_size/2
                     );
                 }
+                log::info!("proof_with_public_inputs: {:?}", prover_result.proof_with_public_inputs);
                 let output_path = Path::new(&output_dir);
                 let proof_result_path =
                     output_path.join("snark_proof_with_public_inputs.json");
@@ -94,34 +95,55 @@ async fn main() -> anyhow::Result<()> {
 }
 
 fn set_guest_input(prover_input: &mut ProverInput) {
-    let goat_withdraw_txid: Vec<u8> =
-        hex::decode(std::env::var("GOAT_WITHDRAW_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    write_to_guest_public_input(prover_input, &goat_withdraw_txid);
 
-    let withdraw_contract_address: Vec<u8> =
-        hex::decode(std::env::var("WITHDRAW_CONTRACT_ADDRESS").unwrap_or("86a77bdfcaff7435e1f1df06a95304d35b112ba8".to_string()))
-            .unwrap();
-    write_to_guest_public_input(prover_input, &withdraw_contract_address);
+    // let goat_withdraw_txid: Vec<u8> =
+    //     hex::decode(std::env::var("GOAT_WITHDRAW_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
+    // write_to_guest_public_input(prover_input, &goat_withdraw_txid);
+    let public_input: Vec<Vec<u8>> = vec![hex::decode("7f8b6b088b6d74c2852fc86c796dca07b44eed6fb3daf5e6b59f7c364db14528".to_string()).unwrap()];
+    let mut pub_buf = Vec::new();
+    bincode::serialize_into(&mut pub_buf, &public_input)
+        .expect("public_input serialization failed");
 
-    let withdraw_map_base_key =
-        hex::decode(std::env::var("WITHDRAW_MAP_BASE_KEY").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    write_to_guest_public_input(prover_input, &withdraw_map_base_key);
-    let withdraw_map_index =
-        hex::decode(std::env::var("WITHDRAW_MAP_INDEX").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    write_to_guest_public_input(prover_input, &withdraw_map_index);
-    let peg_in_txid: Vec<u8> =
-        hex::decode(std::env::var("PEG_IN_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    write_to_guest_public_input(prover_input, &peg_in_txid);
+    let private_input: Vec<Vec<u8>> = vec![];
+    let mut pri_buf = Vec::new();
+    bincode::serialize_into(&mut pri_buf, &private_input).expect("private_input serialization failed");
 
-    let manifest_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    let json_path =
-        env::var("JSON_PATH").unwrap_or(format!("{}/../test-vectors/3168249.json", manifest_path));
-    let mut f = File::open(json_path).unwrap();
-    let mut data = vec![];
-    f.read_to_end(&mut data).unwrap();
+    println!("public_input: {:?}", pub_buf);
+    println!("private_input: {:?}", pri_buf);
 
-    let encoded = guest_std::cbor_serialize(&data).unwrap();
-    write_to_guest_public_input(prover_input, &encoded);
+    // prover_input.private_inputstream = vec![];
+    prover_input.private_inputstream = pri_buf;
+    // prover_input.public_inputstream = vec![];
+    // prover_input.public_inputstream = pub_buf;
+
+
+    //
+    // let withdraw_contract_address: Vec<u8> =
+    //     hex::decode(std::env::var("WITHDRAW_CONTRACT_ADDRESS").unwrap_or("86a77bdfcaff7435e1f1df06a95304d35b112ba8".to_string()))
+    //         .unwrap();
+    // write_to_guest_public_input(prover_input, &withdraw_contract_address);
+    //
+    // let withdraw_map_base_key =
+    //     hex::decode(std::env::var("WITHDRAW_MAP_BASE_KEY").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
+    // write_to_guest_public_input(prover_input, &withdraw_map_base_key);
+    // let withdraw_map_index =
+    //     hex::decode(std::env::var("WITHDRAW_MAP_INDEX").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
+    // write_to_guest_public_input(prover_input, &withdraw_map_index);
+    // let peg_in_txid: Vec<u8> =
+    //     hex::decode(std::env::var("PEG_IN_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
+    // write_to_guest_public_input(prover_input, &peg_in_txid);
+    //
+    // let manifest_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    // let json_path =
+    //     env::var("JSON_PATH").unwrap_or(format!("{}/../test-vectors/3168249.json", manifest_path));
+    // let mut f = File::open(json_path).unwrap();
+    // let mut data = vec![];
+    // f.read_to_end(&mut data).unwrap();
+    //
+    // let encoded = guest_std::cbor_serialize(&data).unwrap();
+    // write_to_guest_public_input(prover_input, &encoded);
+
+
 }
 fn write_to_guest_public_input(prover_input: &mut ProverInput, data: &[u8]) {
     let mut tmp = Vec::new();

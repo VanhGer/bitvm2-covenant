@@ -4,8 +4,10 @@ BASEDIR=$(cd $(dirname $0); pwd)
 export ZKM_PROVER=${ZKM_PROVER-"network"}
 export RUST_LOG=${RUST_LOG-info}
 export SEG_SIZE=${SEG_SIZE-65536}
-export OUTPUT_DIR=${BASEDIR}/output
+#export OUTPUT_DIR=${BASEDIR}/output
 export EXECUTE_ONLY=false
+
+export PROOF_RESULTS_PATH=${BASEDIR}/output
 
 ##network proving
 export CA_CERT_PATH=${BASEDIR}/tool/ca.pem
