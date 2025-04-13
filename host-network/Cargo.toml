@@ -4,7 +4,8 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-zkm-sdk = { git = "https://github.com/zkMIPS/zkm-project-template", branch = "main", features = ["snark"] }
+#zkm-sdk = { git = "https://github.com/zkMIPS/zkm-project-template", branch = "main", features = ["snark"] }
+zkm-sdk = {path = "../../zkm-project-template/sdk", features = ["snark"]}
 tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread", "signal"] }
 env_logger = "0.10.2"
 hex = "0.4.3"

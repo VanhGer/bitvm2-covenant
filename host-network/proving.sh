@@ -3,7 +3,7 @@
 BASEDIR=$(cd $(dirname $0); pwd)
 export ZKM_PROVER=${ZKM_PROVER-"network"}
 export RUST_LOG=${RUST_LOG-info}
-export SEG_SIZE=${SEG_SIZE-262144}
+export SEG_SIZE=${SEG_SIZE-65536}
 export OUTPUT_DIR=${BASEDIR}/output
 export EXECUTE_ONLY=false
 
