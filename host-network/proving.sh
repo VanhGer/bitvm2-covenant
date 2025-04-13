@@ -14,7 +14,7 @@ export CA_CERT_PATH=${BASEDIR}/tool/ca.pem
 export CERT_PATH=${BASEDIR}/tool/.pem
 export KEY_PATH=${BASEDIR}/tool/.key
 #The private key corresponding to the public key when registering in the https://www.zkm.io/apply
-export PROOF_NETWORK_PRVKEY=7649f495f2215e64ee1ab02359fa85d25dbeec9c084ea34ca0e3117704dd1904
+export PROOF_NETWORK_PRVKEY=
 export ENDPOINT=http://localhost:50000    ##the test entry of zkm proof network
 #export DOMAIN_NAME=
 

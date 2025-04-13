@@ -1,52 +1,24 @@
-extern crate alloc;
-
 use std::env;
-use std::fs::File;
-use std::io::Read;
+use zkm_sdk::{include_elf, utils, ProverClient, ZKMProofWithPublicValues, ZKMStdin};
 
-use ark_bn254::Bn254;
-use ark_groth16::{r1cs_to_qap::LibsnarkReduction, Groth16};
-
-use zkm_sdk::{
-    include_elf, utils, HashableKey, ProverClient,
-    ZKMProofWithPublicValues, ZKMStdin,
-};
-use zkm_verifier::{convert_ark, GROTH16_VK_BYTES};
-
+/// The ELF we want to execute inside the zkVM.
 const ELF: &[u8] = include_elf!("bitvm2-covenant");
-
-fn prove_revm() {
+fn prove_keccak_rust() {
     let mut stdin = ZKMStdin::new();
-    let goat_withdraw_txid: Vec<u8> =
-        hex::decode(std::env::var("GOAT_WITHDRAW_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    //assert!(goat_withdraw_txid.len() == 32);
-    stdin.write(&goat_withdraw_txid);
-    // size: 20bytes
-    let withdraw_contract_address: Vec<u8> =
-        hex::decode(std::env::var("WITHDRAW_CONTRACT_ADDRESS").unwrap_or("86a77bdfcaff7435e1f1df06a95304d35b112ba8".to_string()))
-            .unwrap();
-    stdin.write(&withdraw_contract_address);
-    //assert!(withdraw_contract_address.len() == 20);
 
-    let withdraw_map_base_key = 
-        hex::decode(std::env::var("WITHDRAW_MAP_BASE_KEY").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    stdin.write(&withdraw_map_base_key);
-    let withdraw_map_index = 
-        hex::decode(std::env::var("WITHDRAW_MAP_INDEX").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    stdin.write(&withdraw_map_index);
-    let peg_in_txid: Vec<u8> =
-        hex::decode(std::env::var("PEG_IN_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
-    stdin.write(&peg_in_txid);
+    // load input
+    let args = env::var("ARGS").unwrap_or("data-to-hash".to_string());
+    // assume the first arg is the hash output(which is a public input), and the second is the input.
+    let args: Vec<&str> = args.split_whitespace().collect();
+    assert_eq!(args.len(), 2);
 
-    let manifest_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    let json_path =
-        env::var("JSON_PATH").unwrap_or(format!("{}/../test-vectors/3168249.json", manifest_path));
-    let mut f = File::open(json_path).unwrap();
-    let mut data = vec![];
-    f.read_to_end(&mut data).unwrap();
+    let public_input: Vec<u8> = hex::decode(args[0]).unwrap();
+    println!("public input: {:?}", public_input);
+    stdin.write(&public_input);
 
-    let encoded = guest_std::cbor_serialize(&data).unwrap();
-    stdin.write_vec(encoded);
+    let private_input = args[1].as_bytes().to_vec();
+    println!("private input: {:?}", private_input);
+    stdin.write(&private_input);
 
     // Create a `ProverClient` method.
     let client = ProverClient::new();
@@ -57,7 +29,16 @@ fn prove_revm() {
 
     // Generate the proof for the given program and input.
     let (pk, vk) = client.setup(ELF);
-    let proof = client.prove(&pk, stdin).groth16().run().unwrap();
+    let mut proof = client.prove(&pk, stdin).run().unwrap();
+    println!("generated proof");
+
+    // Read and verify the output.
+    //
+    // Note that this output is read from values committed to in the program using
+    // `zkm_zkvm::io::commit`.
+
+    let value = proof.public_values.read::<[u8; 32]>();
+    // assert_eq!(value, *public_input);
 
     // Verify proof and public values
     client.verify(&proof, &vk).expect("verification failed");
@@ -70,21 +51,10 @@ fn prove_revm() {
     // Verify the deserialized proof.
     client.verify(&deserialized_proof, &vk).expect("verification failed");
 
-    // Convert the deserialized proof to an arkworks proof.
-    let ark_proof = convert_ark(&deserialized_proof, &vk.bytes32(), &GROTH16_VK_BYTES).unwrap();
-
-    // Verify the arkworks proof.
-    let ok = Groth16::<Bn254, LibsnarkReduction>::verify_proof(
-        &ark_proof.groth16_vk,
-        &ark_proof.proof,
-        &ark_proof.public_inputs,
-    ).unwrap();
-    assert!(ok);
-
-    println!("successfully generated and verified proof for the program!");
+    println!("successfully generated and verified proof for the program!")
 }
 
 fn main() {
     utils::setup_logger();
-    prove_revm();
+    prove_keccak_rust();
 }

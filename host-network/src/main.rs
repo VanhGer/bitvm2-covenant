@@ -104,7 +104,10 @@ fn set_guest_input(prover_input: &mut ProverInput) {
     bincode::serialize_into(&mut pub_buf, &public_input)
         .expect("public_input serialization failed");
 
-    let private_input: Vec<Vec<u8>> = vec![];
+    let data: Vec<u8> = "12".as_bytes().to_vec();
+    let mut tmp = Vec::new();
+    bincode::serialize_into(&mut tmp, &data).expect("serialization failed");
+    let private_input = vec![tmp];
     let mut pri_buf = Vec::new();
     bincode::serialize_into(&mut pri_buf, &private_input).expect("private_input serialization failed");
 
