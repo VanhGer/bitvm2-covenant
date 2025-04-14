@@ -95,6 +95,7 @@ async fn main() -> anyhow::Result<()> {
 
 fn set_guest_input(prover_input: &mut ProverInput) {
     let mut private_input = vec![];
+
     let goat_withdraw_txid: Vec<u8> =
         hex::decode(std::env::var("GOAT_WITHDRAW_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
     write_to_guest_private_input(&mut private_input, &goat_withdraw_txid);
@@ -107,9 +108,11 @@ fn set_guest_input(prover_input: &mut ProverInput) {
     let withdraw_map_base_key =
         hex::decode(std::env::var("WITHDRAW_MAP_BASE_KEY").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
     write_to_guest_private_input(&mut private_input, &withdraw_map_base_key);
+
     let withdraw_map_index =
         hex::decode(std::env::var("WITHDRAW_MAP_INDEX").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
     write_to_guest_private_input(&mut private_input, &withdraw_map_index);
+
     let peg_in_txid: Vec<u8> =
         hex::decode(std::env::var("PEG_IN_TXID").unwrap_or("32bc8a6c5b3649f92812c461083bab5e8f3fe4516d792bb9a67054ba040b7988".to_string())).unwrap();
     write_to_guest_private_input(&mut private_input, &peg_in_txid);
@@ -120,7 +123,6 @@ fn set_guest_input(prover_input: &mut ProverInput) {
     let mut f = File::open(json_path).unwrap();
     let mut data = vec![];
     f.read_to_end(&mut data).unwrap();
-
     let encoded = guest_std::cbor_serialize(&data).unwrap();
     private_input.push(encoded);
 
