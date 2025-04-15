@@ -6,7 +6,8 @@ edition = "2021"
 members = [
     "host",
     "guest-std",
-    "covenant-lib"
+    "covenant-lib",
+    "host-network"
 ]
 resolver = "2"
 
