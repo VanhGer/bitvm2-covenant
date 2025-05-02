@@ -9,7 +9,8 @@ cargo run -r  --bin bitvm2-covenant-guest
 
 ## Generate the Proof
 ```
-export CARGO_NET_GIT_FETCH_WITH_CLI=true
-
 cargo run -r --bin bitvm2-covenant-host
 ```
+
+## Network prover
+Refer to this [document](https://docs.zkm.io/dev/prover.html#network-prover).
