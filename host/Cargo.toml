@@ -10,6 +10,6 @@ hex = { workspace = true }
 ark-bn254 = { version = "0.5" }
 ark-groth16 = { version = "0.5" }
 guest-std = { git = "https://github.com/zkMIPS/revme", package = "guest-std", branch = "zkMIPS" }
-
+dotenv = "0.15.0"
 [build-dependencies]
 zkm-build = { workspace = true }
