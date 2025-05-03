@@ -86,5 +86,6 @@ fn prove_revm() {
 
 fn main() {
     utils::setup_logger();
+    dotenv::dotenv().ok();
     prove_revm();
 }

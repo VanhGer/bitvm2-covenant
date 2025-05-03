@@ -7,7 +7,6 @@ members = [
     "host",
     "guest-std",
     "covenant-lib",
-    "host-network"
 ]
 resolver = "2"
 
